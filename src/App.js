@@ -1,25 +1,42 @@
-import logo from './logo.svg';
+
 import './App.css';
-
+import { useState,useEffect } from 'react';
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+const[quote,setQuote]=useState(null);
+const[loading,setLoading]=useState(true);
+useEffect(()=>{
+  fetchAdvice();
+},[])
+async function fetchAdvice(){
+  try{
+    const resp=await fetch(`https://api.adviceslip.com/advice`);
+    const data=await resp.json();
+    console.log(data);
+    setQuote(data.slip.advice);
+    setLoading(false);
+    }
+    catch(err)
+    {
+      console.log(err);
+    }
 
+}
+  if(loading)
+  {
+    return(
+      <div className="App">
+        <h1>Random Advice Generator</h1>
+        <div className="loading">Loading...</div>
+      </div>
+    )
+  }
+   return(
+     <div className="App">
+     <h1>Random Advice Generator</h1>
+     <div className="quote">{quote}</div>
+     <button onClick={fetchAdvice}>Get Advice!</button>
+     </div>
+   )
+}
+  
 export default App;
